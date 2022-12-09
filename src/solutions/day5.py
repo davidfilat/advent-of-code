@@ -1,8 +1,10 @@
+import re
 from functools import reduce
 from typing import Dict
-from utils.inputs import read_inputs
-import re
 
+from toolz.functoolz import compose_left, do, partial
+
+from utils.inputs import read_inputs
 
 ContainerStacksState = Dict[int, list[str]]
 MoveType = tuple[int, int, int]
@@ -55,11 +57,18 @@ def get_top_craters_of_each_stack(stacks_state: ContainerStacksState) -> str:
     return "".join(top_craters_of_each_stack)
 
 
+print_results = partial(print, "The top craters of each stack are:")
+
+
+solution = compose_left(
+    parse_moves,
+    partial(apply_moves, get_intial_stack_state()),
+    get_top_craters_of_each_stack,
+    partial(do, print_results),
+)
+
+
 if __name__ == "__main__":
-    lines = read_inputs("day6.txt")
-    stacks = get_intial_stack_state()
-    moves = parse_moves(lines)
-    final_stacks = apply_moves(stacks, moves)
-    result = get_top_craters_of_each_stack(final_stacks)
-    assert result == 'BRZGFVBTJ', 'You got the wrong answer!'
-    print(result)
+    input = read_inputs("day5.txt")
+    result = solution(input)
+    assert result == "BRZGFVBTJ", "You got the wrong answer!"

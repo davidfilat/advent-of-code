@@ -6,7 +6,7 @@ authors = ["David Filat <david.filat@eurasiaprecept.org>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pipe = "^2.0"
+toolz = "^0.12.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"
