@@ -105,7 +105,7 @@ def find_folders_matching_condition(
     ]
 
     if comparison_operator(folder.get_size(), right_hand_comparison_value):
-        folders.append([folder])
+        folders = [*folders, [folder]]
 
     return list(concat(folders))
 

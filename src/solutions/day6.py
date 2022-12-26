@@ -23,5 +23,5 @@ if __name__ == "__main__":
     sys.setrecursionlimit(len(input))
     start_of_packet_marker = find_marker(4, input)
     start_of_message_marker = find_marker(14, input)
-    print(f"The start of the packet marker is at index {start_of_packet_marker}.")
-    print(f"The start of the message marker is at index {start_of_message_marker}.")
+    print("The start of the packet marker is at index", start_of_packet_marker, ".")
+    print("The start of the message marker is at index", start_of_message_marker, ".")
