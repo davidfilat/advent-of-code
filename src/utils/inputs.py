@@ -6,4 +6,4 @@ def read_inputs(filename: str) -> str:
     filepath = os.path.join(dirname, "../../inputs", filename)
     with open(filepath, "r") as f:
         text = f.read()
-    return text
+    return text.strip()
