@@ -1,14 +1,13 @@
 from functools import reduce
-from operator import concat, ge, le
-from typing import Callable, TypeVar
+from operator import ge, le
+from typing import Callable
 from utils.inputs import read_inputs
 from toolz import concat
-
-TFolder = TypeVar("TFolder", bound="Folder")
+from typing import Self
 
 
 class File:
-    def __init__(self, name: str, parent: TFolder, size=0):
+    def __init__(self, name: str, parent: "Folder", size=0):
         self.name = name
         self.parent = parent
         self.size = size
@@ -30,9 +29,9 @@ class Folder:
     def __init__(self, name: str, parent=None):
         self.name = name
         self.parent = parent
-        self.children = []
+        self.children: list[File | Folder] = []
 
-    def add_child(self, child: TFolder | File):
+    def add_child(self, child: Self | File):
         self.children.append(child)
 
     def get_size(self) -> int:
@@ -63,7 +62,7 @@ def parse_command(command: str, cwd: Folder) -> Folder:
     if command.startswith("$ cd"):
         folder_name = command.split(" ")[2]
         if folder_name == "..":
-            return cwd.parent
+            return cwd.parent or cwd
         if folder_name == "/":
             return get_fs_root(cwd)
         folder = Folder(folder_name, cwd)
@@ -105,7 +104,7 @@ def find_folders_matching_condition(
     ]
 
     if comparison_operator(folder.get_size(), right_hand_comparison_value):
-        folders = [*folders, [folder]]
+        folders.append([folder])
 
     return list(concat(folders))
 
