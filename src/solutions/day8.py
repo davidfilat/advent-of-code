@@ -22,9 +22,9 @@ def find_visible_trees(grid: list[list[int]]):
             else:
                 highest_trees_in_region = [
                     max(row[:col_index]),
-                    max(row[col_index + 1:]),
+                    max(row[col_index + 1 :]),
                     max(column[:row_index]),
-                    max(column[row_index + 1:]),
+                    max(column[row_index + 1 :]),
                 ]
                 tree = row[col_index]
                 if any(tree > tree_height for tree_height in highest_trees_in_region):
@@ -45,17 +45,19 @@ def calculate_scenic_score(grid: list[list[int]], tree: tuple[int, int]):
     row = grid[row_index]
     column = [row[col_index] for row in grid]
     tree_height = row[col_index]
-    west = row[:col_index]
-    east = row[col_index + 1:]
-    north = column[:row_index]
-    south = column[row_index + 1:]
-    visible_trees = [
+    west = list(reversed(row[:col_index]))
+    east = row[col_index + 1 :]
+    north = list(reversed(column[:row_index]))
+    south = column[row_index + 1 :]
+
+    viewing_distances = [
         find_index_first_tree_blocking_view(tree_height, direction) or len(direction)
         for direction in (west, east, north, south)
     ]
+
     return reduce(
         mul,
-        visible_trees,
+        viewing_distances,
         1,
     )
 
