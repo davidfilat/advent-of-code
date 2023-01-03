@@ -1,12 +1,24 @@
+from abc import ABC, abstractmethod
 from functools import reduce
 from operator import ge, le
-from typing import Callable
-from utils.inputs import read_inputs
+from typing import Callable, Self
+
 from toolz import concat
-from typing import Self
+
+from utils.inputs import read_inputs
 
 
-class File:
+class FSComponent(ABC):
+    @abstractmethod
+    def get_size(self):
+        pass
+
+    @abstractmethod
+    def get_path(self):
+        pass
+
+
+class File(FSComponent):
     def __init__(self, name: str, parent: "Folder", size=0):
         self.name = name
         self.parent = parent
@@ -25,7 +37,7 @@ class File:
         return self.get_path()
 
 
-class Folder:
+class Folder(FSComponent):
     def __init__(self, name: str, parent=None):
         self.name = name
         self.parent = parent
