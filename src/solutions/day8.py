@@ -142,6 +142,7 @@ def find_index_first_tree_blocking_view(
     for index, height in enumerate(row):
         if height >= tree_height:
             return index + 1
+    return None
 
 
 def calculate_scenic_score(grid: TGrid, coordinates: TTreeCoordinates) -> int:

@@ -64,13 +64,32 @@ class Folder(FSComponent):
         return self.get_path()
 
 
-def get_fs_root(folder: Folder):
+def get_fs_root(folder: Folder) -> Folder:
+    """
+    get_fs_root finds the root of the file system
+
+    Args:
+        folder (Folder): a folder in the file system
+
+    Returns:
+        Folder: the root of the file system
+    """
     if folder.parent is None:
         return folder
     return get_fs_root(folder.parent)
 
 
 def parse_command(command: str, cwd: Folder) -> Folder:
+    """
+    parse_command parses the shell command and updates the current working directory
+
+    Args:
+        command (str): the shell command output line
+        cwd (Folder): the current working directory
+
+    Returns:
+        Folder: the new current working directory
+    """
     if command.startswith("$ cd"):
         folder_name = command.split(" ")[2]
         if folder_name == "..":
@@ -84,6 +103,16 @@ def parse_command(command: str, cwd: Folder) -> Folder:
 
 
 def parse_line(cwd: Folder, line: str) -> Folder:
+    """
+    parse_line parse a single line from the shell output
+
+    Args:
+        cwd (Folder): the current working directory
+        line (str): a single line of shell output
+
+    Returns:
+        Folder: the new or updated current working directory
+    """
     if line.startswith("$"):
         return parse_command(line, cwd)
     if line and not line.startswith("dir"):
@@ -94,6 +123,15 @@ def parse_line(cwd: Folder, line: str) -> Folder:
 
 
 def parse_input(input: str) -> Folder:
+    """
+    parse_input parse the input string into a file system tree
+
+    Args:
+        input (str): the string containing the shell output from the device
+
+    Returns:
+        Folder: the file system root
+    """
     lines = input.split("\n")
     root = Folder("/", None)
     reduce(parse_line, lines, root)
@@ -103,6 +141,17 @@ def parse_input(input: str) -> Folder:
 def find_folders_matching_condition(
     comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
 ) -> list[Folder]:
+    """
+    find_folders_matching_condition _summary_
+
+    Args:
+        comparison_operator (Callable): _description_
+        right_hand_comparison_value (int): _description_
+        folder (Folder): _description_
+
+    Returns:
+        list[Folder]: _description_
+    """
     sub_folders = [c for c in folder.children if isinstance(c, Folder)]
     if not sub_folders and comparison_operator(
         folder.get_size(), right_hand_comparison_value
@@ -121,18 +170,46 @@ def find_folders_matching_condition(
     return list(concat(folders))
 
 
-def sum_folder_sizes(folders: list[Folder]):
+def sum_folder_sizes(folders: list[Folder]) -> int:
+    """
+    sum_folder_sizes sums the sizes of a list of folders
+
+    Args:
+        folders (list[Folder]): a list of folders
+
+    Returns:
+        int: the sum of folder sizes
+    """
     return sum(folder.get_size() for folder in folders)
 
 
-def find_smallest_folder_to_delete(required_size: int, fs_root: Folder):
+def find_smallest_folder_to_delete(required_size: int, fs_root: Folder) -> int:
+    """
+    find_smallest_folder_to_delete find the size of the smallest folder that can be deleted to free enough memory
+
+    Args:
+        required_size (int): the amount of memory that needs freeing up
+        fs_root (Folder): the file system root
+
+    Returns:
+        int: the size of the directory that can be deleted
+    """
     folders = find_folders_matching_condition(ge, required_size, fs_root)
     return min(
         [folder.get_size() for folder in folders if folder.get_size() >= required_size]
     )
 
 
-def get_needed_size(fs_root: Folder):
+def get_needed_size(fs_root: Folder) -> int:
+    """
+    get_needed_size find the amount of memory that needs freeing up
+
+    Args:
+        fs_root (Folder): the root of the file system
+
+    Returns:
+        int: the amount of memory that needs freeing up
+    """
     TOTAL_MEMORY = 70_000_000
     REQUIRED_MEMORY = 30_000_000
     available_memory = TOTAL_MEMORY - root.get_size()
