@@ -117,25 +117,25 @@ def parse_line(cwd: Folder, line: str) -> Folder:
         return parse_command(line, cwd)
     if line and not line.startswith("dir"):
         [size, name] = line.split()
-        file = File(name, cwd, int(size))
-        cwd.add_child(file)
+        file_leaf = File(name, cwd, int(size))
+        cwd.add_child(file_leaf)
     return cwd
 
 
-def parse_input(input: str) -> Folder:
+def parse_input(raw_input: str) -> Folder:
     """
     parse_input parse the input string into a file system tree
 
     Args:
-        input (str): the string containing the shell output from the device
+        raw_input (str): the string containing the shell output from the device
 
     Returns:
         Folder: the file system root
     """
-    lines = input.split("\n")
-    root = Folder("/", None)
-    reduce(parse_line, lines, root)
-    return root
+    lines = raw_input.split("\n")
+    fs_root = Folder("/", None)
+    reduce(parse_line, lines, fs_root)
+    return fs_root
 
 
 def find_folders_matching_condition(
@@ -157,7 +157,7 @@ def find_folders_matching_condition(
         folder.get_size(), right_hand_comparison_value
     ):
         return [folder]
-    folders = [
+    matching_folders = [
         find_folders_matching_condition(
             comparison_operator, right_hand_comparison_value, sub_folder
         )
@@ -165,22 +165,22 @@ def find_folders_matching_condition(
     ]
 
     if comparison_operator(folder.get_size(), right_hand_comparison_value):
-        folders.append([folder])
+        matching_folders.append([folder])
 
-    return list(concat(folders))
+    return list(concat(matching_folders))
 
 
-def sum_folder_sizes(folders: list[Folder]) -> int:
+def sum_folder_sizes(folder_list: list[Folder]) -> int:
     """
     sum_folder_sizes sums the sizes of a list of folders
 
     Args:
-        folders (list[Folder]): a list of folders
+        folder_list (list[Folder]): a list of folders
 
     Returns:
         int: the sum of folder sizes
     """
-    return sum(folder.get_size() for folder in folders)
+    return sum(folder.get_size() for folder in folder_list)
 
 
 def find_smallest_folder_to_delete(required_size: int, fs_root: Folder) -> int:
@@ -194,9 +194,9 @@ def find_smallest_folder_to_delete(required_size: int, fs_root: Folder) -> int:
     Returns:
         int: the size of the directory that can be deleted
     """
-    folders = find_folders_matching_condition(ge, required_size, fs_root)
+    matching_folders = find_folders_matching_condition(ge, required_size, fs_root)
     return min(
-        [folder.get_size() for folder in folders if folder.get_size() >= required_size]
+        [folder.get_size() for folder in matching_folders if folder.get_size() >= required_size]
     )
 
 
@@ -212,13 +212,13 @@ def get_needed_size(fs_root: Folder) -> int:
     """
     TOTAL_MEMORY = 70_000_000
     REQUIRED_MEMORY = 30_000_000
-    available_memory = TOTAL_MEMORY - root.get_size()
+    available_memory = TOTAL_MEMORY - fs_root.get_size()
     return REQUIRED_MEMORY - available_memory
 
 
 if __name__ == "__main__":
-    input = read_inputs("day7.txt")
-    root = parse_input(input)
+    shell_output = read_inputs("day7.txt")
+    root = parse_input(shell_output)
     folders = find_folders_matching_condition(le, 100_000, root)
     result1 = sum_folder_sizes(folders)
     print("Result for part 1 is:", result1)

@@ -1,8 +1,8 @@
 import re
-from functools import reduce
+from functools import reduce, partial
 from typing import Dict
 
-from toolz.functoolz import compose_left, do, partial
+from toolz.functoolz import compose_left, do
 
 from utils.inputs import read_inputs
 
@@ -113,6 +113,6 @@ solution = compose_left(
 
 
 if __name__ == "__main__":
-    input = read_inputs("day5.txt")
-    result = solution(input)
+    raw_instructions = read_inputs("day5.txt")
+    result = solution(raw_instructions)
     assert result == "BRZGFVBTJ", "You got the wrong answer!"
