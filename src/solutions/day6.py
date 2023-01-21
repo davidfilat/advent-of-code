@@ -1,5 +1,9 @@
 import sys
+from functools import partial
 
+from toolz import compose_left, juxt
+
+from utils.func import do_print_result
 from utils.inputs import read_inputs
 
 
@@ -38,10 +42,20 @@ def find_marker(marker_length: int, message_stream: str, start_index: int = 0) -
     )
 
 
+part_1 = compose_left(
+    partial(find_marker, 4),
+    do_print_result('The start of the 4 character packet marker is at index {}.')
+)
+
+part_2 = compose_left(
+    partial(find_marker, 14),
+    do_print_result('The start of the 14 character message marker is at index {}.')
+)
+
+solution = juxt(part_1, part_2)
+
+
 if __name__ == "__main__":
     raw_input = read_inputs("day6.txt")
     sys.setrecursionlimit(len(raw_input))
-    start_of_packet_marker = find_marker(4, raw_input)
-    start_of_message_marker = find_marker(14, raw_input)
-    print(f"The start of the packet marker is at index {start_of_packet_marker}.")
-    print(f"The start of the message marker is at index {start_of_message_marker}.")
+    solution(raw_input)

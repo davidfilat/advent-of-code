@@ -3,6 +3,7 @@ from operator import eq
 from toolz import first, juxt, pipe
 from toolz.curried import map
 
+from utils.func import do_print_result
 from utils.inputs import read_inputs
 
 WINNING_COMBINATIONS = [
@@ -119,7 +120,7 @@ def calculate_round_outcome(one_round: tuple[int, int]) -> tuple[int, int]:
             return get_loser_combination(opponent_move)
 
 
-def part_1(raw_input: str):
+def part_1(raw_input: str) -> int:
     """
 
     Args:
@@ -129,15 +130,16 @@ def part_1(raw_input: str):
         the total score of the game
 
     """
-    return pipe(raw_input, parse_rounds,
+    return pipe(raw_input,
+                parse_rounds,
                 map(replace_moves_with_numbers),
                 map(calculate_round_score),
                 sum,
-                'The total score would be {}.'.format,
-                print)
+                do_print_result('The total score would be {}.'),
+                )
 
 
-def part_2(raw_input: str):
+def part_2(raw_input: str) -> int:
     """
 
     Args:
@@ -153,8 +155,8 @@ def part_2(raw_input: str):
                 map(calculate_round_outcome),
                 map(calculate_round_score),
                 sum,
-                'If the game goes according to the strategy, the total score would be {}.'.format,
-                print)
+                do_print_result('If the game goes according to the strategy, the total score would be {}.')
+                )
 
 
 solution = juxt(part_1, part_2)

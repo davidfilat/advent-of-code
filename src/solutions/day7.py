@@ -215,7 +215,6 @@ def get_needed_size(fs_root: Folder) -> int:
     available_memory = TOTAL_MEMORY - fs_root.get_size()
     return REQUIRED_MEMORY - available_memory
 
-
 if __name__ == "__main__":
     shell_output = read_inputs("day7.txt")
     root = parse_input(shell_output)
