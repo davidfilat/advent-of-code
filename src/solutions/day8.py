@@ -23,7 +23,7 @@ def parse_tree_grid(text: str) -> TGrid:
     Returns:
         a two-dimensional matrix of tree heights
     """
-    lines = text.split("\n")
+    lines = text.splitlines()
     return [list(map(int, line)) for line in lines]
 
 

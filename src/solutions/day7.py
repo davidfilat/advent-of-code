@@ -132,7 +132,7 @@ def parse_input(raw_input: str) -> Folder:
     Returns:
         Folder: the file system root
     """
-    lines = raw_input.split("\n")
+    lines = raw_input.splitlines()
     fs_root = Folder("/", None)
     reduce(parse_line, lines, fs_root)
     return fs_root
