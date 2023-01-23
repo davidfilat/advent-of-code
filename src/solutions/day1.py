@@ -1,7 +1,7 @@
 from toolz import compose_left, juxt
 from toolz.curried import tail
 
-from utils.func import do_print_result
+from utils.func import do_print
 from utils.inputs import read_inputs
 
 
@@ -40,7 +40,7 @@ def get_sum_of_calories_per_elf(calories_groups: list[list[int]]) -> list[int]:
 part_1 = compose_left(parse_calories_groups,
                       get_sum_of_calories_per_elf,
                       max,
-                      do_print_result('The richest elf has {} calories.')
+                      do_print('The richest elf has {} calories.')
                       )
 
 part_2 = compose_left(parse_calories_groups,
@@ -48,7 +48,7 @@ part_2 = compose_left(parse_calories_groups,
                       sorted,
                       tail(3),
                       sum,
-                      do_print_result('The three richest elves have {} calories in total.')
+                      do_print('The three richest elves have {} calories in total.')
                       )
 
 solution = juxt(part_1, part_2)

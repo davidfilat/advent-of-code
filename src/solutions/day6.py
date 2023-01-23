@@ -3,7 +3,7 @@ from functools import partial
 
 from toolz import compose_left, juxt
 
-from utils.func import do_print_result
+from utils.func import do_print
 from utils.inputs import read_inputs
 
 
@@ -44,12 +44,12 @@ def find_marker(marker_length: int, message_stream: str, start_index: int = 0) -
 
 part_1 = compose_left(
     partial(find_marker, 4),
-    do_print_result('The start of the 4 character packet marker is at index {}.')
+    do_print('The start of the 4 character packet marker is at index {}.')
 )
 
 part_2 = compose_left(
     partial(find_marker, 14),
-    do_print_result('The start of the 14 character message marker is at index {}.')
+    do_print('The start of the 14 character message marker is at index {}.')
 )
 
 solution = juxt(part_1, part_2)

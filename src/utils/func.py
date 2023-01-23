@@ -12,7 +12,7 @@ def apply(func: Callable[..., TReturn]) -> Callable[[tuple], TReturn]:
 TValue = TypeVar("TValue")
 
 
-def do_print_result(phrase: str):
+def do_print(phrase: str):
     """
 
     Args:

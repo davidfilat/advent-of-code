@@ -139,7 +139,7 @@ def parse_input(raw_input: str) -> Folder:
 
 
 def find_folders_matching_condition(
-    comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
+        comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
 ) -> list[Folder]:
     """
     find_folders_matching_condition _summary_
@@ -154,7 +154,7 @@ def find_folders_matching_condition(
     """
     sub_folders = [c for c in folder.children if isinstance(c, Folder)]
     if not sub_folders and comparison_operator(
-        folder.get_size(), right_hand_comparison_value
+            folder.get_size(), right_hand_comparison_value
     ):
         return [folder]
     matching_folders = [
@@ -214,6 +214,7 @@ def get_needed_size(fs_root: Folder) -> int:
     REQUIRED_MEMORY = 30_000_000
     available_memory = TOTAL_MEMORY - fs_root.get_size()
     return REQUIRED_MEMORY - available_memory
+
 
 if __name__ == "__main__":
     shell_output = read_inputs("day7.txt")

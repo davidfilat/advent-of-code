@@ -4,7 +4,7 @@ from typing import Dict
 
 from toolz.functoolz import compose_left
 
-from utils.func import do_print_result
+from utils.func import do_print
 from utils.inputs import read_inputs
 
 ContainerStacksState = Dict[int, list[str]]
@@ -106,7 +106,7 @@ solution = compose_left(
     parse_moves,
     partial(apply_moves, get_intial_stack_state()),
     get_top_craters_of_each_stack,
-    do_print_result("The top craters of each stack are: {}")
+    do_print("The top craters of each stack are: {}")
 )
 
 if __name__ == "__main__":
