@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Callable
 
 from more_itertools import ilen
 from toolz import juxt
@@ -19,7 +19,10 @@ def parse_range_pairs(range_pair_string: str) -> list[list[int]]:
         list[list[int]]: the list of range lists
 
     """
-    return [transform_str_to_range(range_string) for range_string in range_pair_string.split(",")]
+    return [
+        transform_str_to_range(range_string)
+        for range_string in range_pair_string.split(",")
+    ]
 
 
 def transform_str_to_range(range_string: str) -> list[int]:
@@ -50,7 +53,9 @@ def sort_by_length(list_of_iterables: list[Iterable]) -> list[Iterable]:
     return sorted(list_of_iterables, key=len)
 
 
-def check_if_segments_include_each_other(segment1: list[int], segment2: list[int]) -> bool:
+def check_if_segments_include_each_other(
+    segment1: list[int], segment2: list[int]
+) -> bool:
     """
     check_if_segments_include_each_other check if one segment is included in the other
 
@@ -97,7 +102,7 @@ def part_1(raw_input: str):
         map(parse_range_pairs),
         filter(apply(check_if_segments_include_each_other)),
         ilen,
-        do_print('There are {} assignment pairs that fully contain the other.')
+        do_print("There are {} assignment pairs that fully contain the other."),
     )
 
 
@@ -116,11 +121,11 @@ def part_2(raw_input: str):
         map(parse_range_pairs),
         filter(apply(check_if_segments_overlap)),
         ilen,
-        do_print('There are {} assignment pairs that overlap.')
+        do_print("There are {} assignment pairs that overlap."),
     )
 
 
-solution = juxt(part_1, part_2)
+solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_instructions = read_inputs("day4.txt")

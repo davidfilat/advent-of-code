@@ -13,18 +13,18 @@ WINNING_COMBINATIONS = [
 ]
 
 
-def replace_moves_with_numbers(single_round: tuple[str, str]) -> tuple[int, int]:
+def replace_moves_with_numbers(single_round: list[str, str]) -> tuple[int, int]:
     """
 
     Args:
-        single_round: a tuple of letters marking the move of the opponent and your move marked
+        single_round: a list of two letters marking the move of the opponent and yours
 
     Returns:
         a tuple of integers marking the score of the moves
 
     """
 
-    def replace_move_with_number(move: str):
+    def replace_move_with_number(move: str) -> int | str:
         match move:
             case 'A' | 'X':
                 return 1
@@ -33,7 +33,7 @@ def replace_moves_with_numbers(single_round: tuple[str, str]) -> tuple[int, int]
             case 'C' | 'Z':
                 return 3
             case _:
-                return move
+                raise ValueError(f'Invalid move {move}')
 
     return tuple(replace_move_with_number(move) for move in single_round)
 
@@ -48,7 +48,10 @@ def parse_rounds(raw_input: str) -> list[tuple[int, int]]:
         a list of tuples of integers marking the score of the moves for each round
 
     """
-    return [replace_moves_with_numbers(one_round.split()) for one_round in raw_input.splitlines()]
+    return [
+        replace_moves_with_numbers(one_round.split(' '))
+        for one_round in raw_input.splitlines()
+    ]
 
 
 def calculate_round_score(one_round: tuple[int, int]) -> int:
@@ -80,7 +83,11 @@ def get_winner_combination(opponent_move: int) -> tuple[int, int]:
         the combination of moves that results in a win
 
     """
-    return first(filter(lambda combination: combination[0] == opponent_move, WINNING_COMBINATIONS))
+    return first(
+        filter(
+            lambda combination: combination[0] == opponent_move, WINNING_COMBINATIONS
+        )
+    )
 
 
 def get_loser_combination(opponent_move: int) -> tuple[int, int]:
@@ -94,7 +101,9 @@ def get_loser_combination(opponent_move: int) -> tuple[int, int]:
 
     """
     return pipe(
-        filter(lambda combination: combination[1] == opponent_move, WINNING_COMBINATIONS),
+        filter(
+            lambda combination: combination[1] == opponent_move, WINNING_COMBINATIONS
+        ),
         first,
         reversed
     )
@@ -104,7 +113,8 @@ def calculate_round_outcome(one_round: tuple[int, int]) -> tuple[int, int]:
     """
 
     Args:
-        one_round: a tuple of integers marking the score of the move of the opponent and the expected outcome
+        one_round: a tuple of integers marking the score
+        of the move of the opponent and the expected outcome
 
     Returns:
         the combination of moves that results in the expected outcome
@@ -132,7 +142,6 @@ def part_1(raw_input: str) -> int:
     """
     return pipe(raw_input,
                 parse_rounds,
-                map(replace_moves_with_numbers),
                 map(calculate_round_score),
                 sum,
                 do_print('The total score would be {}.'),
@@ -151,11 +160,12 @@ def part_2(raw_input: str) -> int:
     """
     return pipe(raw_input,
                 parse_rounds,
-                map(replace_moves_with_numbers),
                 map(calculate_round_outcome),
                 map(calculate_round_score),
                 sum,
-                do_print('If the game goes according to the strategy, the total score would be {}.')
+                do_print(
+                    'According to the strategy, the total score would be {}.'
+                    )
                 )
 
 

@@ -1,5 +1,6 @@
 import sys
 from functools import partial
+from typing import Callable
 
 from toolz import compose_left, juxt
 
@@ -44,15 +45,15 @@ def find_marker(marker_length: int, message_stream: str, start_index: int = 0) -
 
 part_1 = compose_left(
     partial(find_marker, 4),
-    do_print('The start of the 4 character packet marker is at index {}.')
+    do_print("The start of the 4 character packet marker is at index {}."),
 )
 
 part_2 = compose_left(
     partial(find_marker, 14),
-    do_print('The start of the 14 character message marker is at index {}.')
+    do_print("The start of the 14 character message marker is at index {}."),
 )
 
-solution = juxt(part_1, part_2)
+solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
 
 if __name__ == "__main__":

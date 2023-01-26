@@ -17,6 +17,7 @@ flake8 = "^6.0.0"
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.991"
 flake8 = "^6.0.0"
+ruff = "^0.0.235"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,11 +1,11 @@
-from functools import partial, reduce
+from functools import reduce
 from operator import mul
 from typing import Callable, Iterator
 
 from more_itertools import ilen
-from toolz.functoolz import compose_left, curry, do, juxt
+from toolz.functoolz import compose_left, curry, juxt
 
-from utils.func import apply
+from utils.func import apply, do_print
 from utils.inputs import read_inputs
 
 THeight = int
@@ -177,7 +177,7 @@ part_1: Callable[[str], int] = compose_left(
     parse_tree_grid,
     find_visible_trees,
     len,
-    partial(do, partial(print, "The number of visible trees is:")),
+    do_print("The number of visible trees is: {}"),
 )
 
 # Find the highest scenic score for the grid
@@ -186,11 +186,11 @@ part_2: Callable[[str], int] = compose_left(
     juxt(curry(calculate_scenic_score), find_visible_trees),
     apply(map),
     max,
-    partial(do, partial(print, "The highest scenic score is:")),
+    do_print("The highest scenic score is: {}"),
 )
 
-solve: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
+solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_grid = read_inputs("day8.txt")
-    solve(raw_grid)
+    solution(raw_grid)

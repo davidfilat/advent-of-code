@@ -1,5 +1,6 @@
 import string
 from functools import partial
+from typing import Callable
 
 from toolz import juxt
 from toolz.curried import map, pipe
@@ -31,7 +32,7 @@ def split_in_half(sequence: str) -> tuple[str, str]:
         tuple[str, str]: the two halves of the sequence
     """
     length = len(sequence)
-    return sequence[: length // 2], sequence[length // 2:]
+    return sequence[: length // 2], sequence[length // 2 :]
 
 
 def get_list_intersection(list1: list, list2: list) -> list:
@@ -59,7 +60,7 @@ def split_into_chunks(chuck_size: int, sequence: str) -> list[str]:
     Returns:
         list[str]: the chunks of the sequence
     """
-    return [sequence[i: i + chuck_size] for i in range(0, len(sequence), chuck_size)]
+    return [sequence[i : i + chuck_size] for i in range(0, len(sequence), chuck_size)]
 
 
 def sum_priority_per_bag(bag: str) -> int:
@@ -90,22 +91,28 @@ def deep_intersection(list_of_lists: list[list]) -> set:
 
 def part_1(raw_input: str) -> int:
     """
-    part_1 return the sum of priority of the items that are in both compartments of the bag
+    part_1 return the sum of priority of the items
+    that are in both compartments of the bag
 
     Args:
         raw_input (str): the raw input of the problem
 
     Returns:
-        int: the sum of the priority of the letters that are found in both compartments of the bag
+        int: the sum of the priority of the letters
+        that are found in both compartments of the bag
     """
-    return pipe(raw_input,
-                lambda s: s.splitlines(),
-                map(split_in_half),
-                map(apply(get_list_intersection)),
-                map(set),
-                map(sum_priority_per_bag),
-                sum,
-                do_print("The sum of the priority of the letters found in both compartments of the bag is {}."))
+    return pipe(
+        raw_input,
+        lambda s: s.splitlines(),
+        map(split_in_half),
+        map(apply(get_list_intersection)),
+        map(set),
+        map(sum_priority_per_bag),
+        sum,
+        do_print(
+            "The sum of the priority of the items in both compartments of the bag is {}."
+        ),
+    )
 
 
 def part_2(raw_input: str) -> int:
@@ -119,17 +126,19 @@ def part_2(raw_input: str) -> int:
     Returns:
         int: the sum of the priorities of badge items
     """
-    return pipe(raw_input,
-                lambda s: s.splitlines(),
-                partial(split_into_chunks, 3),
-                map(deep_intersection),
-                map(set),
-                map(sum_priority_per_bag),
-                sum,
-                do_print("The sum of the priorities of badge items is {}."))
+    return pipe(
+        raw_input,
+        lambda s: s.splitlines(),
+        partial(split_into_chunks, 3),
+        map(deep_intersection),
+        map(set),
+        map(sum_priority_per_bag),
+        sum,
+        do_print("The sum of the priorities of badge items is {}."),
+    )
 
 
-solution = juxt(part_1, part_2)
+solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_instructions = read_inputs("day3.txt")

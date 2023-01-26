@@ -1,6 +1,5 @@
 from typing import Callable, TypeVar
 
-from toolz import do
 
 TReturn = TypeVar("TReturn")
 
@@ -22,6 +21,7 @@ def do_print(phrase: str):
         a function that prints the phrase with the value and returns the value
 
     """
+
     def print_and_return_value(value: TValue) -> TValue:
         print(phrase.format(value))
         return value

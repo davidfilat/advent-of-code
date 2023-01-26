@@ -1,6 +1,6 @@
 import re
 from functools import reduce, partial
-from typing import Dict
+from typing import Dict, Callable
 
 from toolz.functoolz import compose_left
 
@@ -51,7 +51,7 @@ def parse_moves(text: str) -> list[MoveType]:
 
 
 def move_craters(
-        crater_stacks: ContainerStacksState, move: MoveType
+    crater_stacks: ContainerStacksState, move: MoveType
 ) -> ContainerStacksState:
     """
     move_craters move the creater from one stack to another
@@ -74,7 +74,7 @@ def move_craters(
 
 
 def apply_moves(
-        stacks_state: ContainerStacksState, list_of_moves: list[MoveType]
+    stacks_state: ContainerStacksState, list_of_moves: list[MoveType]
 ) -> ContainerStacksState:
     """
     apply_moves apply all the instruction to the container stacks state
@@ -102,11 +102,11 @@ def get_top_craters_of_each_stack(stacks_state: ContainerStacksState) -> str:
     return "".join(top_craters_of_each_stack)
 
 
-solution = compose_left(
+solution: Callable[[str], str] = compose_left(
     parse_moves,
     partial(apply_moves, get_intial_stack_state()),
     get_top_craters_of_each_stack,
-    do_print("The top craters of each stack are: {}")
+    do_print("The top craters of each stack are: {}"),
 )
 
 if __name__ == "__main__":

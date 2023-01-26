@@ -1,3 +1,5 @@
+from typing import Callable
+
 from toolz import compose_left, juxt
 from toolz.curried import tail
 
@@ -37,21 +39,23 @@ def get_sum_of_calories_per_elf(calories_groups: list[list[int]]) -> list[int]:
     return list(map(sum, calories_groups))
 
 
-part_1 = compose_left(parse_calories_groups,
-                      get_sum_of_calories_per_elf,
-                      max,
-                      do_print('The richest elf has {} calories.')
-                      )
+part_1 = compose_left(
+    parse_calories_groups,
+    get_sum_of_calories_per_elf,
+    max,
+    do_print("The richest elf has {} calories."),
+)
 
-part_2 = compose_left(parse_calories_groups,
-                      get_sum_of_calories_per_elf,
-                      sorted,
-                      tail(3),
-                      sum,
-                      do_print('The three richest elves have {} calories in total.')
-                      )
+part_2 = compose_left(
+    parse_calories_groups,
+    get_sum_of_calories_per_elf,
+    sorted,
+    tail(3),
+    sum,
+    do_print("The three richest elves have {} calories in total."),
+)
 
-solution = juxt(part_1, part_2)
+solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_input = read_inputs("day1.txt")

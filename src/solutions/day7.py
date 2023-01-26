@@ -139,7 +139,7 @@ def parse_input(raw_input: str) -> Folder:
 
 
 def find_folders_matching_condition(
-        comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
+    comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
 ) -> list[Folder]:
     """
     find_folders_matching_condition _summary_
@@ -154,7 +154,7 @@ def find_folders_matching_condition(
     """
     sub_folders = [c for c in folder.children if isinstance(c, Folder)]
     if not sub_folders and comparison_operator(
-            folder.get_size(), right_hand_comparison_value
+        folder.get_size(), right_hand_comparison_value
     ):
         return [folder]
     matching_folders = [
@@ -196,7 +196,11 @@ def find_smallest_folder_to_delete(required_size: int, fs_root: Folder) -> int:
     """
     matching_folders = find_folders_matching_condition(ge, required_size, fs_root)
     return min(
-        [folder.get_size() for folder in matching_folders if folder.get_size() >= required_size]
+        [
+            folder.get_size()
+            for folder in matching_folders
+            if folder.get_size() >= required_size
+        ]
     )
 
 
