@@ -1,6 +1,6 @@
 import re
 from functools import reduce, partial
-from typing import Dict, Callable
+from typing import Dict, Callable, cast
 
 from toolz.functoolz import compose_left
 
@@ -47,14 +47,14 @@ def parse_moves(text: str) -> list[MoveType]:
         return tuple(map(int, values))
 
     pattern = re.compile(r"move (\d*) from (\d*) to (\d*)")
-    return [parse_move(match.groups()) for match in pattern.finditer(text)]
+    return cast(list[MoveType], [parse_move(match.groups()) for match in pattern.finditer(text)])
 
 
 def move_craters(
     crater_stacks: ContainerStacksState, move: MoveType
 ) -> ContainerStacksState:
     """
-    move_craters move the creater from one stack to another
+    move_craters move the crater from one stack to another
 
     Args:
         crater_stacks (ContainerStacksState): the current state of the container stacks

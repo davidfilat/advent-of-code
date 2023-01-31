@@ -1,4 +1,5 @@
 from operator import eq
+from typing import cast, Callable
 
 from toolz import first, juxt, pipe
 from toolz.curried import map
@@ -12,8 +13,10 @@ WINNING_COMBINATIONS = [
     (2, 3),
 ]
 
+TRound = tuple[int, int]
 
-def replace_moves_with_numbers(single_round: list[str, str]) -> tuple[int, int]:
+
+def replace_moves_with_numbers(single_round: list[str]) -> TRound:
     """
 
     Args:
@@ -24,21 +27,21 @@ def replace_moves_with_numbers(single_round: list[str, str]) -> tuple[int, int]:
 
     """
 
-    def replace_move_with_number(move: str) -> int | str:
+    def replace_move_with_number(move: str) -> int:
         match move:
-            case 'A' | 'X':
+            case "A" | "X":
                 return 1
-            case 'B' | 'Y':
+            case "B" | "Y":
                 return 2
-            case 'C' | 'Z':
+            case "C" | "Z":
                 return 3
             case _:
-                raise ValueError(f'Invalid move {move}')
+                raise ValueError(f"Invalid move {move}")
 
-    return tuple(replace_move_with_number(move) for move in single_round)
+    return cast(TRound, tuple(replace_move_with_number(move) for move in single_round))
 
 
-def parse_rounds(raw_input: str) -> list[tuple[int, int]]:
+def parse_rounds(raw_input: str) -> list[TRound]:
     """
 
     Args:
@@ -49,7 +52,7 @@ def parse_rounds(raw_input: str) -> list[tuple[int, int]]:
 
     """
     return [
-        replace_moves_with_numbers(one_round.split(' '))
+        replace_moves_with_numbers(one_round.split(" "))
         for one_round in raw_input.splitlines()
     ]
 
@@ -90,7 +93,7 @@ def get_winner_combination(opponent_move: int) -> tuple[int, int]:
     )
 
 
-def get_loser_combination(opponent_move: int) -> tuple[int, int]:
+def get_loser_combination(opponent_move: int) -> TRound:
     """
 
     Args:
@@ -100,13 +103,16 @@ def get_loser_combination(opponent_move: int) -> tuple[int, int]:
         the combination of moves that results in a loss
 
     """
-    return pipe(
+    loser_combination = pipe(
         filter(
             lambda combination: combination[1] == opponent_move, WINNING_COMBINATIONS
         ),
         first,
-        reversed
+        reversed,
+        tuple
     )
+
+    return cast(TRound, loser_combination)
 
 
 def calculate_round_outcome(one_round: tuple[int, int]) -> tuple[int, int]:
@@ -120,14 +126,13 @@ def calculate_round_outcome(one_round: tuple[int, int]) -> tuple[int, int]:
         the combination of moves that results in the expected outcome
 
     """
+    outcome_map: dict[int, Callable[[int], TRound]] = {
+        1: get_loser_combination,
+        2: lambda move: (move, move),
+        3: get_winner_combination,
+    }
     opponent_move, outcome = one_round
-    match outcome:
-        case 3:
-            return get_winner_combination(opponent_move)
-        case 2:
-            return opponent_move, opponent_move
-        case 1:
-            return get_loser_combination(opponent_move)
+    return outcome_map[outcome](opponent_move)
 
 
 def part_1(raw_input: str) -> int:
@@ -140,12 +145,14 @@ def part_1(raw_input: str) -> int:
         the total score of the game
 
     """
-    return pipe(raw_input,
-                parse_rounds,
-                map(calculate_round_score),
-                sum,
-                do_print('The total score would be {}.'),
-                )
+    result = pipe(
+        raw_input,
+        parse_rounds,
+        map(calculate_round_score),
+        sum,
+        do_print("The total score would be {}."),
+    )
+    return cast(int, result)
 
 
 def part_2(raw_input: str) -> int:
@@ -158,19 +165,20 @@ def part_2(raw_input: str) -> int:
         the total score of the game if the strategy is followed
 
     """
-    return pipe(raw_input,
-                parse_rounds,
-                map(calculate_round_outcome),
-                map(calculate_round_score),
-                sum,
-                do_print(
-                    'According to the strategy, the total score would be {}.'
-                    )
-                )
+    result = pipe(
+        raw_input,
+        parse_rounds,
+        map(calculate_round_outcome),
+        map(calculate_round_score),
+        sum,
+        do_print("According to the strategy, the total score would be {}."),
+    )
+    return cast(int, result)
 
 
 solution = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_instructions = read_inputs("day2.txt")
-    solution(raw_instructions)
+    results = solution(raw_instructions)
+    assert results == (14297, 10498), f'Wrong answers {results}'

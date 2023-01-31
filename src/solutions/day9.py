@@ -245,7 +245,8 @@ def parse_moves(raw_input: str) -> list[TMove]:
 
 def solution(rope_length: int, raw_input: str) -> int:
     """
-    solution find the total number of positions visited by the tail of the rope at least once
+    solution find the total number of positions visited by the tail
+    of the rope at least once
 
     Args:
         rope_length (int): the length of the rope
@@ -274,4 +275,5 @@ solve = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_moves = read_inputs("day9.txt")
-    solve(raw_moves)
+    results = solve(raw_moves)
+    assert results == (6018, 2619), f'Wrong answers {results}'

@@ -229,3 +229,5 @@ if __name__ == "__main__":
 
     result2 = find_smallest_folder_to_delete(get_needed_size(root), root)
     print("Result for part 2 is:", result2)
+    
+    assert (result1, result2) == (1391690, 5469168),  f'Wrong answers {(result1, result2)}'

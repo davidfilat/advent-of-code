@@ -1,8 +1,7 @@
 from functools import reduce
 from operator import mul
-from typing import Callable, Iterator
+from typing import Callable
 
-from more_itertools import ilen
 from toolz.functoolz import compose_left, curry, juxt
 
 from utils.func import apply, do_print
@@ -29,7 +28,7 @@ def parse_tree_grid(text: str) -> TGrid:
 
 def get_tree_rows_in_cardinal_directions(
         grid: TGrid, coordinates: TTreeCoordinates
-) -> dict[str, list[THeight] | Iterator[THeight]]:
+) -> dict[str, list[THeight]]:
     """
     get_tree_rows_in_cardinal_directions extract the rows of tree heights in the 4 cardinal directions
 
@@ -38,15 +37,16 @@ def get_tree_rows_in_cardinal_directions(
         coordinates: a tree coordinates
 
     Returns:
-        a dictionary of the rows of tree heights in the 4 cardinal directions relative to the give tree coordinates
+        a dictionary of the rows of tree heights in the 4 cardinal directions
+        relative to the give tree coordinates
     """
     row_index, col_index = coordinates
     row = grid[row_index]
     column = [row[col_index] for row in grid]
     return {
-        "west": reversed(row[:col_index]),
+        "west": list(reversed(row[:col_index])),
         "east": row[col_index + 1:],
-        "north": reversed(column[:row_index]),
+        "north": list(reversed(column[:row_index])),
         "south": column[row_index + 1:],
     }
 
@@ -127,7 +127,7 @@ def find_visible_trees(grid: TGrid) -> list[TTreeCoordinates]:
 
 
 def find_index_first_tree_blocking_view(
-        tree_height: int, row: list[THeight] | Iterator[THeight]
+        tree_height: int, row: list[THeight]
 ) -> int | None:
     """
     find_index_first_tree_blocking_view returns the index of the first tree that is
@@ -138,6 +138,7 @@ def find_index_first_tree_blocking_view(
         row: list of tree heights
     Returns:
         the index of the first tree that is of the same height or higher
+        or None if no such tree exists
     """
     for index, height in enumerate(row):
         if height >= tree_height:
@@ -160,7 +161,7 @@ def calculate_scenic_score(grid: TGrid, coordinates: TTreeCoordinates) -> int:
     row_index, col_index = coordinates
     tree_height = grid[row_index][col_index]
     viewing_distances = [
-        find_index_first_tree_blocking_view(tree_height, direction) or ilen(direction)
+        find_index_first_tree_blocking_view(tree_height, direction) or len(direction)
         for direction in get_tree_rows_in_cardinal_directions(
             grid, coordinates
         ).values()
@@ -193,4 +194,5 @@ solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_grid = read_inputs("day8.txt")
-    solution(raw_grid)
+    results = solution(raw_grid)
+    assert results == (1851, 574080), f'Wrong answers {results}'
