@@ -1,5 +1,4 @@
-import sys
-from functools import partial
+from functools import partial, reduce
 from typing import Callable
 
 from toolz import compose_left, juxt
@@ -21,26 +20,28 @@ def are_all_characters_unique(sequence: str) -> bool:
     return len(set(sequence)) == len(sequence)
 
 
-def find_marker(marker_length: int, message_stream: str, start_index: int = 0) -> int:
+def find_marker(marker_length: int, message_stream: str) -> int | None:
     """
     find_marker finds the index of the first character in a sequence of unique characters of the given length
 
     Args:
         marker_length (int): the length for the sequence of unique characters
         message_stream (str): the input message string
-        start_index (int, optional): the message index from which to start the check. Defaults to 0.
 
     Returns:
-        int: the index of the first character in marker sequenece
+        int | None: the index of the first character in marker sequence 
+        or None if no marker is found
     """
-    end_of_sequence = start_index + marker_length
-    sequence = message_stream[start_index:end_of_sequence]
-    is_marker = are_all_characters_unique(sequence)
-    return (
-        end_of_sequence
-        if is_marker
-        else find_marker(marker_length, message_stream, start_index + 1)
-    )
+
+    def find_maker_start_index(accumulator: None | int, start_index: int) -> int:
+        if isinstance(accumulator, int):
+            return accumulator
+        end_of_sequence = start_index + marker_length
+        sequence = message_stream[start_index:end_of_sequence]
+        is_marker = are_all_characters_unique(sequence)
+        return end_of_sequence if is_marker else accumulator
+
+    return reduce(find_maker_start_index, range(len(message_stream)), None)
 
 
 part_1 = compose_left(
@@ -55,8 +56,6 @@ part_2 = compose_left(
 
 solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
-
 if __name__ == "__main__":
     raw_input = read_inputs("day6.txt")
-    sys.setrecursionlimit(len(raw_input))
     solution(raw_input)
