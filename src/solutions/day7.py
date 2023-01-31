@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from functools import reduce
+from functools import reduce, partial
 from operator import ge, le
 from typing import Callable, Self
 
-from toolz import concat
+from toolz import concat, compose_left, juxt, identity
 
+from utils.func import do_print, apply
 from utils.inputs import read_inputs
 
 
@@ -139,22 +140,22 @@ def parse_input(raw_input: str) -> Folder:
 
 
 def find_folders_matching_condition(
-    comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
+        comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
 ) -> list[Folder]:
     """
-    find_folders_matching_condition _summary_
+    find_folders_matching_condition finds all folders that match a condition
 
     Args:
-        comparison_operator (Callable): _description_
-        right_hand_comparison_value (int): _description_
-        folder (Folder): _description_
+        comparison_operator (Callable): a comparison operator function (import operator)
+        right_hand_comparison_value (int): the right hand value of the comparison
+        folder (Folder): the parent folder to check
 
     Returns:
-        list[Folder]: _description_
+        list[Folder]: a list of children folders that match the condition
     """
     sub_folders = [c for c in folder.children if isinstance(c, Folder)]
     if not sub_folders and comparison_operator(
-        folder.get_size(), right_hand_comparison_value
+            folder.get_size(), right_hand_comparison_value
     ):
         return [folder]
     matching_folders = [
@@ -183,7 +184,7 @@ def sum_folder_sizes(folder_list: list[Folder]) -> int:
     return sum(folder.get_size() for folder in folder_list)
 
 
-def find_smallest_folder_to_delete(required_size: int, fs_root: Folder) -> int:
+def find_size_of_smallest_folder_to_delete(required_size: int, fs_root: Folder) -> int:
     """
     find_smallest_folder_to_delete find the size of the smallest folder that can be deleted to free enough memory
 
@@ -220,14 +221,21 @@ def get_needed_size(fs_root: Folder) -> int:
     return REQUIRED_MEMORY - available_memory
 
 
-if __name__ == "__main__":
-    shell_output = read_inputs("day7.txt")
-    root = parse_input(shell_output)
-    folders = find_folders_matching_condition(le, 100_000, root)
-    result1 = sum_folder_sizes(folders)
-    print("Result for part 1 is:", result1)
+part_1 = compose_left(parse_input,
+                      partial(find_folders_matching_condition, le, 100_000),
+                      sum_folder_sizes,
+                      do_print("There are {} folders with the size less than 100.000.")
+                      )
 
-    result2 = find_smallest_folder_to_delete(get_needed_size(root), root)
-    print("Result for part 2 is:", result2)
-    
-    assert (result1, result2) == (1391690, 5469168),  f'Wrong answers {(result1, result2)}'
+part_2 = compose_left(parse_input,
+                      juxt(get_needed_size, identity),
+                      apply(find_size_of_smallest_folder_to_delete),
+                      do_print("The size of the smallest folder that can be deleted is {}.")
+                      )
+
+solve = juxt(part_1, part_2)
+
+if __name__ == "__main__":
+    raw_input = read_inputs("day7.txt")
+    results = solve(raw_input)
+    assert results == (1391690, 5469168), f'Wrong answers {results}'
