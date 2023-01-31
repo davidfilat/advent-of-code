@@ -1,5 +1,5 @@
+from pprint import pprint
 from typing import Callable, TypeVar
-
 
 TReturn = TypeVar("TReturn")
 
@@ -27,3 +27,8 @@ def do_print(phrase: str):
         return value
 
     return print_and_return_value
+
+
+def do_pprint(obj: TValue) -> TValue:
+    pprint(obj)
+    return obj
