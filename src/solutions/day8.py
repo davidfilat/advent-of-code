@@ -92,20 +92,19 @@ def is_tree_the_highest_in_its_region(
     )
 
 
-def is_tree_visible_from_outside(grid: TGrid) -> Callable[[TTreeCoordinates], bool]:
+@curry
+def is_tree_visible_from_outside(grid: TGrid, tree: TTreeCoordinates) -> bool:
     """
     is_tree_visible_from_outside checks if the
 
     Args:
         grid: two-dimensional matrix of tree heights
+        tree: tree coordinates inside the grid
 
     Returns:
-        a function that accepts a tree coordinates and returns a boolean indicating
-        if the tree is visible from outside the grid
+        a boolean indicating whether the tree is visible from outside the grid
     """
-    return lambda tree: is_tree_on_the_edge_of_the_grid(
-        grid, tree
-    ) or is_tree_the_highest_in_its_region(grid, tree)
+    return is_tree_on_the_edge_of_the_grid(grid, tree) or is_tree_the_highest_in_its_region(grid, tree)
 
 
 def find_visible_trees(grid: TGrid) -> list[TTreeCoordinates]:
@@ -146,6 +145,7 @@ def find_index_first_tree_blocking_view(
     return None
 
 
+@curry
 def calculate_scenic_score(grid: TGrid, coordinates: TTreeCoordinates) -> int:
     """
     calculate_scenic_score returns the scenic score for a given tree in the grid
@@ -184,7 +184,7 @@ part_1: Callable[[str], int] = compose_left(
 # Find the highest scenic score for the grid
 part_2: Callable[[str], int] = compose_left(
     parse_tree_grid,
-    juxt(curry(calculate_scenic_score), find_visible_trees),
+    juxt(calculate_scenic_score, find_visible_trees),
     apply(map),
     max,
     do_print("The highest scenic score is: {}"),

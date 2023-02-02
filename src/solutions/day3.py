@@ -1,8 +1,7 @@
 import string
-from functools import partial
 from typing import Callable
 
-from toolz import juxt
+from toolz import juxt, curry
 from toolz.curried import map, pipe
 
 from utils.func import apply, do_print
@@ -32,7 +31,7 @@ def split_in_half(sequence: str) -> tuple[str, str]:
         tuple[str, str]: the two halves of the sequence
     """
     length = len(sequence)
-    return sequence[: length // 2], sequence[length // 2 :]
+    return sequence[: length // 2], sequence[length // 2:]
 
 
 def get_list_intersection(list1: list, list2: list) -> list:
@@ -49,6 +48,7 @@ def get_list_intersection(list1: list, list2: list) -> list:
     return list(set(list1) & set(list2))
 
 
+@curry
 def split_into_chunks(chuck_size: int, sequence: str) -> list[str]:
     """
     split_into_chunks split the sequence into chunks of size chuck_size
@@ -60,7 +60,7 @@ def split_into_chunks(chuck_size: int, sequence: str) -> list[str]:
     Returns:
         list[str]: the chunks of the sequence
     """
-    return [sequence[i : i + chuck_size] for i in range(0, len(sequence), chuck_size)]
+    return [sequence[i: i + chuck_size] for i in range(0, len(sequence), chuck_size)]
 
 
 def sum_priority_per_bag(bag: str) -> int:
@@ -129,7 +129,7 @@ def part_2(raw_input: str) -> int:
     return pipe(
         raw_input,
         lambda s: s.splitlines(),
-        partial(split_into_chunks, 3),
+        split_into_chunks(3),
         map(deep_intersection),
         map(set),
         map(sum_priority_per_bag),

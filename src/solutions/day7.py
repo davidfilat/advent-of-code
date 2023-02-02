@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-from functools import reduce, partial
+from functools import reduce
 from operator import ge, le
 from typing import Callable, Self
 
-from toolz import concat, compose_left, juxt, identity
+from toolz import concat, compose_left, juxt, identity, curry
 
 from utils.func import do_print, apply
 from utils.inputs import read_inputs
@@ -139,6 +139,7 @@ def parse_input(raw_input: str) -> Folder:
     return fs_root
 
 
+@curry
 def find_folders_matching_condition(
         comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
 ) -> list[Folder]:
@@ -222,7 +223,7 @@ def get_needed_size(fs_root: Folder) -> int:
 
 
 part_1 = compose_left(parse_input,
-                      partial(find_folders_matching_condition, le, 100_000),
+                      find_folders_matching_condition(le, 100_000),
                       sum_folder_sizes,
                       do_print("There are {} folders with the size less than 100.000.")
                       )

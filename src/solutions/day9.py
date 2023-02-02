@@ -3,7 +3,7 @@ from functools import reduce, partial
 from typing import Callable, cast, Literal
 
 from more_itertools import last
-from toolz import pipe, juxt
+from toolz import pipe, juxt, curry
 
 from utils.func import do_print
 from utils.inputs import read_inputs
@@ -86,15 +86,17 @@ def are_knots_adjacent(head: TPosition, tail: TPosition) -> bool:
     return tx in range(hx - 1, hx + 2) and ty in range(hy - 1, hy + 2)
 
 
-def move_head_knot(direction: TDirection) -> Callable[[TPosition], TPosition]:
+@curry
+def move_head_knot(direction: TDirection, head_position: TPosition) -> TPosition:
     """
     move_head_knot get the function that moves the head knot in the given direction
 
     Args:
         direction (TDirection): direction to move the head knot (R, L, U, D)
+        head_position (TPosition): tuple of x and y coordinates of the head knot
 
     Returns:
-        Callable[[TPosition], TPosition]: function that moves the head knot in the given direction
+        TPosition: tuple of new x and y coordinates of the head knot
     """
     direction_move_map: dict[TDirection, Callable[[TPosition], TPosition]] = {
         "R": move_right,
@@ -103,11 +105,11 @@ def move_head_knot(direction: TDirection) -> Callable[[TPosition], TPosition]:
         "D": move_down,
     }
 
-    return lambda head_position: direction_move_map[direction](head_position)
+    return direction_move_map[direction](head_position)
 
 
 def get_change_for_knot(
-    knot_position: TPosition, head_knot_position: TPosition
+        knot_position: TPosition, head_knot_position: TPosition
 ) -> tuple[int, int]:
     """
     get_change_for_knot calculate the change needed to move the knot to be adjacent to the head knot
@@ -138,7 +140,7 @@ def get_change_for_knot(
 
 
 def keep_knot_close(
-    knot_position: TPosition, head_knot_position: TPosition
+        knot_position: TPosition, head_knot_position: TPosition
 ) -> TPosition:
     """
     keep_knot_close move the knot to be adjacent to the head knot
@@ -208,20 +210,22 @@ def apply_move(rope_tracker: list[TRope], move: TMove) -> list[TRope]:
     return reduce(apply_step, range(steps), rope_tracker)
 
 
-def apply_moves(rope_length: int) -> Callable[[list[TMove]], list[TRope]]:
+@curry
+def apply_moves(rope_length: int, moves: list[TMove]) -> list[TRope]:
     """
     apply_moves generates the rope and
     returns a function that applies the moves to the rope
 
     Args:
         rope_length (int): the length of the rope to generate
+        moves (list[TMove]): a list of moves to apply to the rope
 
     Returns:
-        Callable[[list[TMove]], list[TRope]]: a function that applies the moves to the rope
+        list[TRope]: a list of the rope positions after applying the moves
     """
     start_position = (0, 0)
     rope = [start_position for _ in range(rope_length)]
-    return lambda moves: reduce(apply_move, moves, [rope])
+    return reduce(apply_move, moves, [rope])
 
 
 def parse_moves(raw_input: str) -> list[TMove]:
@@ -234,6 +238,7 @@ def parse_moves(raw_input: str) -> list[TMove]:
     Returns:
         list[tuple[TDirection, int]]: a list of moves (direction, steps)
     """
+
     def parse_move(match) -> TMove:
         direction, steps = match.groups()
         return direction, int(steps)
@@ -243,6 +248,7 @@ def parse_moves(raw_input: str) -> list[TMove]:
     return [parse_move(match) for match in pattern.finditer(raw_input)]
 
 
+@curry
 def solution(rope_length: int, raw_input: str) -> int:
     """
     solution find the total number of positions visited by the tail
@@ -268,8 +274,8 @@ def solution(rope_length: int, raw_input: str) -> int:
     )
 
 
-part_1 = partial(solution, 2)
-part_2 = partial(solution, 10)
+part_1 = solution(2)
+part_2 = solution(10)
 
 solve = juxt(part_1, part_2)
 

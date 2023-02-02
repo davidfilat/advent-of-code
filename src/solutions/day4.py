@@ -1,9 +1,8 @@
-from functools import partial
 from typing import Iterable, Callable
 
 from more_itertools import ilen
 from toolz import juxt
-from toolz.curried import pipe, filter
+from toolz.curried import pipe, filter, map
 
 from utils.func import apply, do_print
 from utils.inputs import read_inputs
@@ -58,7 +57,7 @@ def sort_by_length(list_of_iterables: list[Iterable]) -> list[Iterable]:
 
 
 def check_if_segments_include_each_other(
-    segment1: list[int], segment2: list[int]
+        segment1: list[int], segment2: list[int]
 ) -> bool:
     """
     check_if_segments_include_each_other check if one segment is included in the other
@@ -103,7 +102,7 @@ def part_1(raw_input: str):
     return pipe(
         raw_input,
         lambda x: x.splitlines(),
-        partial(map, parse_range_pairs),
+        map(parse_range_pairs),
         filter(apply(check_if_segments_include_each_other)),
         ilen,
         do_print("There are {} assignment pairs that fully contain the other."),
@@ -122,7 +121,7 @@ def part_2(raw_input: str):
     return pipe(
         raw_input,
         lambda x: x.splitlines(),
-        partial(map, parse_range_pairs),
+        map(parse_range_pairs),
         filter(apply(check_if_segments_overlap)),
         ilen,
         do_print("There are {} assignment pairs that overlap."),
@@ -133,5 +132,5 @@ solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_instructions = read_inputs("day4.txt")
-    results  = solution(raw_instructions)
+    results = solution(raw_instructions)
     assert results == (528, 881), f'Wrong answers {results}'

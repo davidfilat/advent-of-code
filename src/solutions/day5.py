@@ -11,9 +11,9 @@ ContainerStacksState = Dict[int, list[str]]
 MoveType = tuple[int, int, int]
 
 
-def get_intial_stack_state() -> ContainerStacksState:
+def get_initial_stack_state() -> ContainerStacksState:
     """
-    get_intial_stack_state get the initial state of the container stacks
+    get_initial_stack_state get the initial state of the container stacks
 
     Returns:
         ContainerStacksState: the initial state of the container stacks
@@ -104,7 +104,7 @@ def get_top_craters_of_each_stack(stacks_state: ContainerStacksState) -> str:
 
 solution: Callable[[str], str] = compose_left(
     parse_moves,
-    partial(apply_moves, get_intial_stack_state()),
+    partial(apply_moves, get_initial_stack_state()),
     get_top_craters_of_each_stack,
     do_print("The top craters of each stack are: {}"),
 )
