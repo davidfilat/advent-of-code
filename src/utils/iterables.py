@@ -1,13 +1,17 @@
-from typing import Callable, Iterable
+from typing import Iterable
+
+from toolz import curry
 
 
-def join_to_str(sep: str) -> Callable[[Iterable], str]:
+@curry
+def join_to_str(sep: str, iterable: Iterable) -> str:
     """
     join_to_str join an iterable to a string
     Args:
         sep (str): the separator to use 
+        iterable (Iterable): the iterable to join (ex: [1, 2, 3]
 
     Returns:
         str: the joined string
     """
-    return lambda iterable: sep.join(iterable)
+    return sep.join(iterable)

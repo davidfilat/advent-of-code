@@ -12,8 +12,8 @@ TRegisterValue = int
 TRegisterCycles = list[TRegisterValue]
 TCommand = Callable[[TRegisterValue], TRegisterCycles]
 
-SCREEN_ROW_LENGTH = 40
-SCREEN_COLUMNS = 6
+SCREEN_COLUMNS = 40
+SCREEN_ROWS = 6
 TSCREEN = list[list[str]]
 
 
@@ -113,7 +113,7 @@ def get_pixel(cycle: int, x: int) -> str:
     Returns:
         str: the pixel to display
     """
-    return "█" if cycle % SCREEN_ROW_LENGTH in range(x - 1, x + 2) else " "
+    return "█" if cycle % SCREEN_COLUMNS in range(x - 1, x + 2) else " "
 
 
 def generate_crt(register: TRegisterCycles) -> TSCREEN:
@@ -125,7 +125,7 @@ def generate_crt(register: TRegisterCycles) -> TSCREEN:
     Returns:
         TSCREEN: the CRT screen (matrix format)
     """
-    return partition(SCREEN_ROW_LENGTH, [get_pixel(cycle, x) for cycle, x in enumerate(register)])
+    return partition(SCREEN_COLUMNS, [get_pixel(cycle, x) for cycle, x in enumerate(register)])
 
 
 def generate_screen_output(screen: TSCREEN) -> str:
@@ -138,7 +138,7 @@ def generate_screen_output(screen: TSCREEN) -> str:
         str: the screen output
     """
     rows = map(join_to_str(''), screen)
-    return join_to_str('\n')(rows)
+    return join_to_str('\n', rows)
 
 
 part_1: Callable[[str], int] = compose_left(parse_input,
