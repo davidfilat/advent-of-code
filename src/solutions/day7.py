@@ -141,7 +141,7 @@ def parse_input(raw_input: str) -> Folder:
 
 @curry
 def find_folders_matching_condition(
-        comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
+    comparison_operator: Callable, right_hand_comparison_value: int, folder: Folder
 ) -> list[Folder]:
     """
     find_folders_matching_condition finds all folders that match a condition
@@ -156,7 +156,7 @@ def find_folders_matching_condition(
     """
     sub_folders = [c for c in folder.children if isinstance(c, Folder)]
     if not sub_folders and comparison_operator(
-            folder.get_size(), right_hand_comparison_value
+        folder.get_size(), right_hand_comparison_value
     ):
         return [folder]
     matching_folders = [
@@ -187,7 +187,8 @@ def sum_folder_sizes(folder_list: list[Folder]) -> int:
 
 def find_size_of_smallest_folder_to_delete(required_size: int, fs_root: Folder) -> int:
     """
-    find_smallest_folder_to_delete find the size of the smallest folder that can be deleted to free enough memory
+    find_smallest_folder_to_delete find the size of the smallest folder
+    that can be deleted to free enough memory
 
     Args:
         required_size (int): the amount of memory that needs freeing up
@@ -222,21 +223,23 @@ def get_needed_size(fs_root: Folder) -> int:
     return REQUIRED_MEMORY - available_memory
 
 
-part_1 = compose_left(parse_input,
-                      find_folders_matching_condition(le, 100_000),
-                      sum_folder_sizes,
-                      do_print("There are {} folders with the size less than 100.000.")
-                      )
+part_1 = compose_left(
+    parse_input,
+    find_folders_matching_condition(le, 100_000),
+    sum_folder_sizes,
+    do_print("There are {} folders with the size less than 100.000."),
+)
 
-part_2 = compose_left(parse_input,
-                      juxt(get_needed_size, identity),
-                      apply(find_size_of_smallest_folder_to_delete),
-                      do_print("The size of the smallest folder that can be deleted is {}.")
-                      )
+part_2 = compose_left(
+    parse_input,
+    juxt(get_needed_size, identity),
+    apply(find_size_of_smallest_folder_to_delete),
+    do_print("The size of the smallest folder that can be deleted is {}."),
+)
 
 solve = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_input = read_inputs("day7.txt")
     results = solve(raw_input)
-    assert results == (1391690, 5469168), f'Wrong answers {results}'
+    assert results == (1391690, 5469168), f"Wrong answers {results}"

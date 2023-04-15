@@ -32,3 +32,12 @@ def do_print(phrase: str):
 def do_pprint(obj: TValue) -> TValue:
     pprint(obj)
     return obj
+
+
+def log_return(func: Callable[..., TReturn]) -> Callable[..., TReturn]:
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        print(result)
+        return result
+
+    return wrapper

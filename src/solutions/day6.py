@@ -23,14 +23,14 @@ def are_all_characters_unique(sequence: str) -> bool:
 @curry
 def find_marker(marker_length: int, message_stream: str) -> int | None:
     """
-    find_marker finds the index of the first character in a sequence of unique characters of the given length
+    find_marker finds the index of the first character in a sequence of unique characters
 
     Args:
         marker_length (int): the length for the sequence of unique characters
         message_stream (str): the input message string
 
     Returns:
-        int | None: the index of the first character in marker sequence 
+        int | None: the index of the first character in marker sequence
         or None if no marker is found
     """
 
@@ -60,4 +60,4 @@ solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 if __name__ == "__main__":
     raw_input = read_inputs("day6.txt")
     results = solution(raw_input)
-    assert results == (1766, 2383), f'Wrong answers {results}'
+    assert results == (1766, 2383), f"Wrong answers {results}"

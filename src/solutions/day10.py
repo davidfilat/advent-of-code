@@ -21,7 +21,7 @@ def apply_command(register: TRegisterCycles, command: TCommand) -> TRegisterCycl
     """
     apply_command apply a command to a register
     Args:
-        register (TRegisterCycles): the register to add the command to 
+        register (TRegisterCycles): the register to add the command to
         command (TCommand): the command to apply
 
     Returns:
@@ -32,7 +32,9 @@ def apply_command(register: TRegisterCycles, command: TCommand) -> TRegisterCycl
     return [*register, *command(current_register_value)]
 
 
-def apply_commands(commands: list[TCommand], init_register_value: TRegisterValue = 1) -> TRegisterCycles:
+def apply_commands(
+    commands: list[TCommand], init_register_value: TRegisterValue = 1
+) -> TRegisterCycles:
     """
     apply_commands apply a list of commands to a register
     Args:
@@ -63,7 +65,7 @@ def get_signal_strengths(at: list[int], register: TRegisterCycles) -> list[int]:
     """
     get_signal_strengths get the signal strength at a given cycles
     Args:
-        at (list[int]): the cycles to get the signal strength at 
+        at (list[int]): the cycles to get the signal strength at
         register (TRegisterCycles): the register to get the signal strength from
 
     Returns:
@@ -125,7 +127,9 @@ def generate_crt(register: TRegisterCycles) -> TSCREEN:
     Returns:
         TSCREEN: the CRT screen (matrix format)
     """
-    return partition(SCREEN_COLUMNS, [get_pixel(cycle, x) for cycle, x in enumerate(register)])
+    return partition(
+        SCREEN_COLUMNS, [get_pixel(cycle, x) for cycle, x in enumerate(register)]
+    )
 
 
 def generate_screen_output(screen: TSCREEN) -> str:
@@ -137,25 +141,29 @@ def generate_screen_output(screen: TSCREEN) -> str:
     Returns:
         str: the screen output
     """
-    rows = map(join_to_str(''), screen)
-    return join_to_str('\n', rows)
+    rows = map(join_to_str(""), screen)
+    return join_to_str("\n", rows)
 
 
-part_1: Callable[[str], int] = compose_left(parse_input,
-                                            apply_commands,
-                                            get_signal_strengths([20, 60, 100, 140, 180, 220]),
-                                            sum,
-                                            do_print("The sum of these six signal strengths is {}."))
+part_1: Callable[[str], int] = compose_left(
+    parse_input,
+    apply_commands,
+    get_signal_strengths([20, 60, 100, 140, 180, 220]),
+    sum,
+    do_print("The sum of these six signal strengths is {}."),
+)
 
-part_2: Callable[[str], str] = compose_left(parse_input,
-                                            apply_commands,
-                                            generate_crt,
-                                            generate_screen_output,
-                                            do_print("The screen will display:\n{}"))
+part_2: Callable[[str], str] = compose_left(
+    parse_input,
+    apply_commands,
+    generate_crt,
+    generate_screen_output,
+    do_print("The screen will display:\n{}"),
+)
 
 solve: Callable[[str], tuple[int, str]] = juxt(part_1, part_2)
 
 if __name__ == "__main__":
     raw_commands = read_inputs("day10.txt")
     (part_1, _) = solve(raw_commands)
-    assert part_1 == 11720, f'Wrong answers {part_1}'
+    assert part_1 == 11720, f"Wrong answers {part_1}"

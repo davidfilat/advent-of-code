@@ -40,14 +40,17 @@ def parse_moves(text: str) -> list[MoveType]:
         text (str): the input string with the instructions to move the craters
 
     Returns:
-        list[MoveType]: a list of tuples of integers (number of craters to move, from stack, to stack)
+        list[MoveType]: a list of tuples of integers
+        (number of craters to move, from stack, to stack)
     """
 
     def parse_move(values):
         return tuple(map(int, values))
 
     pattern = re.compile(r"move (\d*) from (\d*) to (\d*)")
-    return cast(list[MoveType], [parse_move(match.groups()) for match in pattern.finditer(text)])
+    return cast(
+        list[MoveType], [parse_move(match.groups()) for match in pattern.finditer(text)]
+    )
 
 
 def move_craters(

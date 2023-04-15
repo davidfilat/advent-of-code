@@ -26,11 +26,11 @@ def parse_tree_grid(text: str) -> TGrid:
     return [list(map(int, line)) for line in lines]
 
 
-def get_tree_rows_in_cardinal_directions(
-        grid: TGrid, coordinates: TTreeCoordinates
+def get_trees_in_cardinal_directions(
+    grid: TGrid, coordinates: TTreeCoordinates
 ) -> dict[str, list[THeight]]:
     """
-    get_tree_rows_in_cardinal_directions extract the rows of tree heights in the 4 cardinal directions
+    get_trees_in_cardinal_directions extract the rows of tree heights in the 4 cardinal directions
 
     Args:
         grid: a two-dimensional matrix of tree heights
@@ -45,9 +45,9 @@ def get_tree_rows_in_cardinal_directions(
     column = [row[col_index] for row in grid]
     return {
         "west": list(reversed(row[:col_index])),
-        "east": row[col_index + 1:],
+        "east": row[col_index + 1 :],
         "north": list(reversed(column[:row_index])),
-        "south": column[row_index + 1:],
+        "south": column[row_index + 1 :],
     }
 
 
@@ -67,7 +67,7 @@ def is_tree_on_the_edge_of_the_grid(grid: TGrid, coordinates: TTreeCoordinates) 
 
 
 def is_tree_the_highest_in_its_region(
-        grid: TGrid, coordinates: TTreeCoordinates
+    grid: TGrid, coordinates: TTreeCoordinates
 ) -> bool:
     """
     is_tree_the_highest_in_its_region checks if the tree is the highest in all 4 cardinal directions
@@ -79,9 +79,7 @@ def is_tree_the_highest_in_its_region(
     Returns:
         boolean indicating if the tree is the highest in all 4 cardinal directions
     """
-    trees_in_cardinal_directions = get_tree_rows_in_cardinal_directions(
-        grid, coordinates
-    )
+    trees_in_cardinal_directions = get_trees_in_cardinal_directions(grid, coordinates)
     highest_trees_in_region = [
         max(row) for row in trees_in_cardinal_directions.values()
     ]
@@ -104,7 +102,9 @@ def is_tree_visible_from_outside(grid: TGrid, tree: TTreeCoordinates) -> bool:
     Returns:
         a boolean indicating whether the tree is visible from outside the grid
     """
-    return is_tree_on_the_edge_of_the_grid(grid, tree) or is_tree_the_highest_in_its_region(grid, tree)
+    return is_tree_on_the_edge_of_the_grid(
+        grid, tree
+    ) or is_tree_the_highest_in_its_region(grid, tree)
 
 
 def find_visible_trees(grid: TGrid) -> list[TTreeCoordinates]:
@@ -126,7 +126,7 @@ def find_visible_trees(grid: TGrid) -> list[TTreeCoordinates]:
 
 
 def find_index_first_tree_blocking_view(
-        tree_height: int, row: list[THeight]
+    tree_height: int, row: list[THeight]
 ) -> int | None:
     """
     find_index_first_tree_blocking_view returns the index of the first tree that is
@@ -162,9 +162,7 @@ def calculate_scenic_score(grid: TGrid, coordinates: TTreeCoordinates) -> int:
     tree_height = grid[row_index][col_index]
     viewing_distances = [
         find_index_first_tree_blocking_view(tree_height, direction) or len(direction)
-        for direction in get_tree_rows_in_cardinal_directions(
-            grid, coordinates
-        ).values()
+        for direction in get_trees_in_cardinal_directions(grid, coordinates).values()
     ]
     return reduce(
         mul,
@@ -195,4 +193,4 @@ solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 if __name__ == "__main__":
     raw_grid = read_inputs("day8.txt")
     results = solution(raw_grid)
-    assert results == (1851, 574080), f'Wrong answers {results}'
+    assert results == (1851, 574080), f"Wrong answers {results}"

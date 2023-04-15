@@ -109,7 +109,7 @@ def move_head_knot(direction: TDirection, head_position: TPosition) -> TPosition
 
 
 def get_change_for_knot(
-        knot_position: TPosition, head_knot_position: TPosition
+    knot_position: TPosition, head_knot_position: TPosition
 ) -> tuple[int, int]:
     """
     get_change_for_knot calculate the change needed to move the knot to be adjacent to the head knot
@@ -140,7 +140,7 @@ def get_change_for_knot(
 
 
 def keep_knot_close(
-        knot_position: TPosition, head_knot_position: TPosition
+    knot_position: TPosition, head_knot_position: TPosition
 ) -> TPosition:
     """
     keep_knot_close move the knot to be adjacent to the head knot
@@ -282,4 +282,4 @@ solve = juxt(part_1, part_2)
 if __name__ == "__main__":
     raw_moves = read_inputs("day9.txt")
     results = solve(raw_moves)
-    assert results == (6018, 2619), f'Wrong answers {results}'
+    assert results == (6018, 2619), f"Wrong answers {results}"

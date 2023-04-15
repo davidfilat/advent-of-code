@@ -31,7 +31,7 @@ def split_in_half(sequence: str) -> tuple[str, str]:
         tuple[str, str]: the two halves of the sequence
     """
     length = len(sequence)
-    return sequence[: length // 2], sequence[length // 2:]
+    return sequence[: length // 2], sequence[length // 2 :]
 
 
 def get_list_intersection(list1: list, list2: list) -> list:
@@ -60,7 +60,7 @@ def split_into_chunks(chuck_size: int, sequence: str) -> list[str]:
     Returns:
         list[str]: the chunks of the sequence
     """
-    return [sequence[i: i + chuck_size] for i in range(0, len(sequence), chuck_size)]
+    return [sequence[i : i + chuck_size] for i in range(0, len(sequence), chuck_size)]
 
 
 def sum_priority_per_bag(bag: str) -> int:
@@ -143,4 +143,4 @@ solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 if __name__ == "__main__":
     raw_instructions = read_inputs("day3.txt")
     results = solution(raw_instructions)
-    assert results == (8298, 2708), f'Wrong answers {results}'
+    assert results == (8298, 2708), f"Wrong answers {results}"

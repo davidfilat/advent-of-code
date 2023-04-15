@@ -109,7 +109,7 @@ def get_loser_combination(opponent_move: int) -> TRound:
         ),
         first,
         reversed,
-        tuple
+        tuple,
     )
 
     return cast(TRound, loser_combination)
@@ -181,4 +181,4 @@ solution = juxt(part_1, part_2)
 if __name__ == "__main__":
     raw_instructions = read_inputs("day2.txt")
     results = solution(raw_instructions)
-    assert results == (14297, 10498), f'Wrong answers {results}'
+    assert results == (14297, 10498), f"Wrong answers {results}"

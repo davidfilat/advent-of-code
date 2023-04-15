@@ -57,7 +57,7 @@ def sort_by_length(list_of_iterables: list[Iterable]) -> list[Iterable]:
 
 
 def check_if_segments_include_each_other(
-        segment1: list[int], segment2: list[int]
+    segment1: list[int], segment2: list[int]
 ) -> bool:
     """
     check_if_segments_include_each_other check if one segment is included in the other
@@ -133,4 +133,4 @@ solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 if __name__ == "__main__":
     raw_instructions = read_inputs("day4.txt")
     results = solution(raw_instructions)
-    assert results == (528, 881), f'Wrong answers {results}'
+    assert results == (528, 881), f"Wrong answers {results}"

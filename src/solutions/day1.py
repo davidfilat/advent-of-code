@@ -60,4 +60,4 @@ solution: Callable[[str], tuple[int, int]] = juxt(part_1, part_2)
 if __name__ == "__main__":
     raw_input = read_inputs("day1.txt")
     results = solution(raw_input)
-    assert results == (71124, 204639), f'Wrong answers {results}'
+    assert results == (71124, 204639), f"Wrong answers {results}"
