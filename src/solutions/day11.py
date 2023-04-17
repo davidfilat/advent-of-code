@@ -29,7 +29,7 @@ class Monkey:
                     self.id = int(ID[:-1])
                 case ["Starting", "items:", *_]:
                     self.items = [int(item) for item in re.findall(r"\d+", line)]
-                case ["Operation:", "new", "=", _old, operation, value]:
+                case ["Operation:", "new", "=", 'old', operation, value]:
                     self.inspect_operation = lambda x: OPERATIONS_MAP[operation](
                         x, int(value) if value != "old" else x
                     )
@@ -58,10 +58,10 @@ def parse_input(text: str) -> MonkeyGroup:
 
 
 def throw_item_to_monkey(
-    item: int, monkey_id: int, monkey_group: MonkeyGroup
+        item: int, monkey_id: int, group: MonkeyGroup
 ) -> MonkeyGroup:
-    monkey_group[monkey_id].items.append(item)
-    return monkey_group
+    group[monkey_id].items = [*group[monkey_id].items, item]
+    return group
 
 
 @curry
@@ -74,33 +74,30 @@ def inspect_items(reduce_worry_func: Callable[[int], int], monkey: Monkey) -> Mo
 
 
 @curry
-def throw_items(monkey_group: MonkeyGroup, monkey: Monkey) -> Monkey:
+def throw_items(group: MonkeyGroup, monkey: Monkey) -> Monkey:
     for item in monkey.items:
         if item % monkey.test_denominator == 0:
-            throw_item_to_monkey(item, monkey.throw_to_if_true, monkey_group)
+            throw_item_to_monkey(item, monkey.throw_to_if_true, group)
         else:
-            throw_item_to_monkey(item, monkey.throw_to_if_false, monkey_group)
+            throw_item_to_monkey(item, monkey.throw_to_if_false, group)
     monkey.items = []
     return monkey
 
 
 @curry
 def play_round(
-    reduce_worry_func: Callable[[int], int], monkey_group: MonkeyGroup, _round_id: int
+        reduce_worry_func: Callable[[int], int], group: MonkeyGroup, _round_id: int
 ) -> MonkeyGroup:
-    turn = compose_left(inspect_items(reduce_worry_func), throw_items(monkey_group))
-    for monkey in monkey_group:
-        turn(monkey)
-
-    return monkey_group
+    turn = compose_left(inspect_items(reduce_worry_func), throw_items(group))
+    return MonkeyGroup(map(turn, group))
 
 
-def part_1(monkey_group: MonkeyGroup) -> int:
+def part_1(group: MonkeyGroup) -> int:
     def reduce_worry_func(x):
         return x // 3
 
     return pipe(
-        monkey_group,
+        group,
         deepcopy,
         lambda x: reduce(play_round(reduce_worry_func), range(20), x),
         map(lambda monkey: monkey.items_inspected),
@@ -111,15 +108,15 @@ def part_1(monkey_group: MonkeyGroup) -> int:
     )
 
 
-def part_2(monkey_group: MonkeyGroup) -> int:
+def part_2(group: MonkeyGroup) -> int:
     def reduce_worry_func(x):
         denominator = reduce(
-            operator.mul, [monkey.test_denominator for monkey in monkey_group], 1
+            operator.mul, [monkey.test_denominator for monkey in group], 1
         )
         return x % denominator
 
     return pipe(
-        monkey_group,
+        group,
         deepcopy,
         lambda x: reduce(play_round(reduce_worry_func), range(10_000), x),
         map(lambda monkey: monkey.items_inspected),
